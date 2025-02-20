@@ -66,7 +66,7 @@ public class Public {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User user) {
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
         try {
@@ -79,7 +79,7 @@ public class Public {
 
             // Generate JWT token
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
+            System.out.println(jwt);
             // Fetch all colonies (you can customize this logic if you want to return colonies specific to the user)
 //            List<Colony> colonies = colonyService.getAllColoniesOfUser(user); // Replace with your logic to get colonies
 //
