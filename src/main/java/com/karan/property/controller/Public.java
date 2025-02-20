@@ -67,6 +67,8 @@ public class Public {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody User user) {
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
         try {
             // Authenticate the user
             authenticationManager.authenticate(
