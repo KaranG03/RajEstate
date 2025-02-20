@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plots</title>
+    <style>
+       /* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    text-align: center;
+}
+
+/* Heading */
+h2 {
+    margin-top: 20px;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+/* Plot Grid */
+#plot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Plot Box */
+.plot-box {
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: #222;
+    min-height: 160px;
+}
+
+.plot-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Status Colors */
+.sold {
+    background: linear-gradient(135deg, #43a047, #2e7d32) !important;
+    color: white;
+}
+
+.available {
+    background: linear-gradient(135deg, #e53935, #c62828) !important;
+    color: white;
+}
+
+/* Button */
+button {
+    padding: 12px 18px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #0056b3, #003d82);
+    transform: scale(1.07);
+}
+
+/* Loading Spinner */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.spinner {
+    width: 55px;
+    height: 55px;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-top: 6px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+    </style>
+</head>
+<body>
+
+<h2>Plot List</h2>
+
+<!-- Loading Spinner -->
+<div id="loading" class="loading-container">
+    <div class="spinner"></div>
+</div>
+
+<div id="plot-grid" style="display: none;">
+    <!-- Plots will be dynamically loaded here -->
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const colonyId = urlParams.get('colonyId');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchPlotList(colonyId);
+    });
+
+    async function fetchPlotList(colonyId) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:8080/colony/${colonyId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const plots = await response.json();
+                displayPlotList(plots);
+            } else {
+                console.error('Failed fetching plots:', error);
+            }
+        } catch (error) {
+            console.error('Error fetching plots:', error);
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('plot-grid').style.display = 'grid';
+        }
+    }
+
+    function displayPlotList(plots) {
+        const plotGrid = document.getElementById('plot-grid');
+        plotGrid.innerHTML = '';
+
+        plots.forEach(plot => {
+            const plotBox = document.createElement('div');
+            plotBox.classList.add('plot-box', plot.sold ? 'sold' : 'available');
+
+            plotBox.innerHTML = `
+                <p><strong>Plot No:</strong> ${plot.plotNo}</p>
+                <p><strong>Price:</strong> ₹${plot.price.toLocaleString()}</p>
+                <p><strong>Owner:</strong> ${plot.owner}</p>
+                <p><strong>Status:</strong> ${plot.sold ? 'Sold' : 'Available'}</p>
+                <button onclick="redirectToEdit('${plot.id}')">Edit Plot</button>
+            `;
+            plotGrid.appendChild(plotBox);
+        });
+    }
+
+    function redirectToEdit(plotId) {
+        window.location.href = `/plot-edit?plotId=${plotId}`;
+    }
+</script>
+
+</body>
+</html>

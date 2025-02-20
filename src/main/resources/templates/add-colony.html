@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Colony</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        #new-colony-container {
+            display: none;
+            width: 350px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #fff;
+            color: #333;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #add-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #cancel-btn {
+            background-color: #dc3545;
+            color: white;
+            margin-top: 10px;
+        }
+
+        #add-btn:hover {
+            background-color: #218838;
+        }
+
+        #cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .status-message {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .error {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 4px solid #ccc;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add New Colony</h2>
+
+<!-- Button to show form -->
+
+<!-- Form Container -->
+<div id="new-colony-container">
+    <form id="new-colony-form">
+        <div class="form-group">
+            <label for="new-colony-name">Colony Name:</label>
+            <input type="text" id="new-colony-name" placeholder="Enter colony name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="new-colony-location">Location:</label>
+            <input type="text" id="new-colony-location" placeholder="Enter location" required>
+        </div>
+
+        <div class="form-group">
+            <label for="new-colony-partners">Partners (comma-separated):</label>
+            <input type="text" id="new-colony-partners" placeholder="e.g., John, Alice">
+        </div>
+
+        <div class="form-group">
+            <label for="new-colony-numPlots">Number of Plots:</label>
+            <input type="number" id="new-colony-numPlots" placeholder="Enter number of plots" required>
+        </div>
+
+        <button type="button" id="add-btn" onclick="createNewColony()">Add Colony</button>
+        <button type="button" id="cancel-btn" onclick="hideNewColonyForm()">Cancel</button>
+    </form>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Adding colony...</p>
+    </div>
+
+    <div id="status-message" class="status-message"></div>
+</div>
+
+<script>
+    function showNewColonyForm() {
+    document.getElementById('new-colony-container').style.display = 'block';
+}
+
+// Show form automatically when page loads
+window.onload = function() {
+    showNewColonyForm();
+};
+
+
+    function hideNewColonyForm() {
+        window.location.href = '/colonies-list';
+    }
+
+    async function createNewColony() {
+        const name = document.getElementById('new-colony-name').value.trim();
+        const location = document.getElementById('new-colony-location').value.trim();
+        const partners = document.getElementById('new-colony-partners').value.split(',').map(p => p.trim());
+        const numPlots = parseInt(document.getElementById('new-colony-numPlots').value, 10);
+
+        if (!name || !location || isNaN(numPlots)) {
+            showMessage("Please fill all required fields.", "error");
+            return;
+        }
+
+        document.getElementById('add-btn').disabled = true;
+        document.getElementById('loading').style.display = 'block';
+
+        const data = { name, location, partners, numPlots };
+
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('http://localhost:8080/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                showMessage("Colony added successfully!", "success");
+                setTimeout(() => {
+                    window.location.href = '/colonies-list';
+                }, 2000);
+            } else {
+                const error = await response.text();
+                showMessage(`Failed to add colony: ${error}`, "error");
+            }
+        } catch (error) {
+            console.error('Error adding colony:', error);
+            showMessage("An error occurred while adding colony.", "error");
+        } finally {
+            document.getElementById('add-btn').disabled = false;
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    function showMessage(message, type) {
+        const messageBox = document.getElementById('status-message');
+        messageBox.innerText = message;
+        messageBox.className = `status-message ${type}`;
+        messageBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            width: 350px;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 12px;
+            display: none;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff4757;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast Notification Styles */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .toast.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #2ecc71;
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <input type="text" id="signup-username" placeholder="Username" required>
+        <p class="error" id="username-error">Username must be at least 3 characters.</p>
+
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <p class="error" id="email-error">Enter a valid email.</p>
+
+        <input type="password" id="signup-password" placeholder="Password" required>
+        <p class="error" id="password-error">
+            Password must be at least 8 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+        </p>
+
+        <button type="submit">Sign Up</button>
+    </form>
+    <p class="login-link">Already have an account? <a href="/login">Login here</a></p>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<script>
+    function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.className = `toast show ${type}`;
+
+        setTimeout(() => {
+            toast.className = toast.className.replace("show", "");
+        }, 3000);
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('signup-username').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
+
+        const usernameError = document.getElementById('username-error');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+
+        let valid = true;
+
+        // Username Validation
+        if (username.length < 3) {
+            usernameError.style.display = 'block';
+            valid = false;
+        } else {
+            usernameError.style.display = 'none';
+        }
+
+        // Email Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailError.style.display = 'block';
+            valid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Password Validation
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            passwordError.style.display = 'block';
+            valid = false;
+        } else {
+            passwordError.style.display = 'none';
+        }
+
+        if (!valid) {
+            showToast("Please fix the errors and try again.", "error");
+            return;
+        }
+
+        // Send request only if validation passes
+        const data = { username, password, mail: email };
+
+        try {
+            const response = await fetch('http://localhost:8080/public/sign-up', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                showToast("Signup successful! Redirecting...", "success");
+                setTimeout(() => window.location.href = "/login", 2000);
+            } else {
+                const error = await response.text();
+                showToast(`Signup failed: ${error}`, "error");
+            }
+        } catch (error) {
+            showToast("Network error. Try again later.", "error");
+        }
+    });
+</script>
+
+</body>
+</html>

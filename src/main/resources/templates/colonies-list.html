@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colony List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 26px;
+            color: #2c3e50;
+        }
+
+        #colony-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+.colony-box {
+    border: none;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 150px; /* Reduced height */
+    max-width: 260px; /* Reduced width */
+    position: relative;
+    overflow: hidden;
+    padding-top: 50px;
+}
+
+/* Adjusted Colony Name */
+.colony-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-bottom: 6px; /* Adds space below colony name */
+}
+
+/* Ensure spacing below colony name */
+.colony-box .colony-name + p {
+    margin-top: 25px; /* Slightly increased */
+}
+
+
+/* Colony Details */
+.colony-box p {
+    font-size: 14px;
+    color: #444;
+    margin: 5px 0; /* Reduced margin */
+    display: flex;
+    align-items: center;
+    padding-left: 5px; /* Ensures alignment */
+}
+
+/* Adjust Labels */
+.colony-box p strong {
+    font-size: 15px;
+    color: #222;
+    margin-right: 6px;
+}
+
+
+
+
+
+.colony-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Colony Name Styling */
+.colony-box h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+
+
+
+/* View Plots Button */
+.colony-box button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-end;
+}
+
+.colony-box button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        #add-colony-btn {
+    background-color: #28a745;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#add-colony-btn:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+        .fixed-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        #show-customers-btn, #logout-btn {
+            background-color: #ff5733;
+            color: white;
+            font-size: 16px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #show-customers-btn:hover, #logout-btn:hover {
+            background-color: #e04d2b;
+            transform: scale(1.1);
+        }
+
+        #logout-btn {
+            background-color: #dc3545;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 300px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background-color: #218838;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .loader-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.loader {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Colony List</h2>
+    <div class="fixed-buttons">
+        <button id="show-customers-btn" onclick="redirectToCustomers()">Show Customers</button>
+        <button id="logout-btn" onclick="openLogoutModal()">Logout</button>
+    </div>
+</div>
+
+<div class="btn-container">
+    <button id="add-colony-btn" onclick="redirectToAddColony()">Add New Colony</button>
+</div>
+
+<div id="loader" class="loader-container">
+    <div class="loader"></div>
+    <p>Loading colonies...</p>
+</div>
+
+
+<div id="colony-grid"></div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logout-modal" class="modal">
+    <div class="modal-content">
+        <h3>Are you sure you want to logout?</h3>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm-btn" onclick="logout()">Yes, Logout</button>
+            <button class="modal-btn cancel-btn" onclick="closeLogoutModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchColonyList();
+        preventBackNavigation();
+    });
+
+    async function fetchColonyList() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
+        document.getElementById('loader').style.display = 'flex';
+    document.getElementById('colony-grid').style.display = 'none';
+        try {
+            const response = await fetch('http://localhost:8080/user', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const colonies = await response.json();
+                displayColonyList(colonies);
+            }
+        } catch (error) {
+            console.error('Error fetching colonies:', error);
+        }
+        finally {
+        // Hide loader and show colony grid
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('colony-grid').style.display = 'grid';
+    }
+    }
+
+   function displayColonyList(colonies) {
+    const colonyGrid = document.getElementById('colony-grid');
+    colonyGrid.innerHTML = '';
+
+    colonies.forEach(colony => {
+        const colonyBox = document.createElement('div');
+        colonyBox.classList.add('colony-box');
+        colonyBox.innerHTML = `
+            <h3 class="colony-name">${colony.name}</h3>
+            <p><strong>📍 Location:</strong> ${colony.location}</p>
+            <p><strong>🤝 Partners:</strong> ${colony.partners ? colony.partners.join(', ') : 'N/A'}</p>
+            <button onclick="redirectToPlotPage('${colony.id}')">🔍 View Plots</button>
+        `;
+        colonyGrid.appendChild(colonyBox);
+    });
+}
+
+
+
+    function redirectToPlotPage(colonyId) {
+        window.location.href = `/plot?colonyId=${colonyId}`;
+    }
+
+    function redirectToAddColony() {
+        window.location.href = '/add-colony';
+    }
+
+    function redirectToCustomers() {
+        window.location.href = '/customers';
+    }
+
+    function openLogoutModal() {
+        document.getElementById('logout-modal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logout-modal').style.display = 'none';
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    }
+
+    function preventBackNavigation() {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        logout(); // Logout the user when they press back
+    };
+}
+
+</script>
+
+</body>
+</html>
