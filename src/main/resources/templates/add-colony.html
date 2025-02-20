@@ -198,7 +198,7 @@ window.onload = function() {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await fetch('http://localhost:8080/user', {
+            const response = await fetch('https://rajestate-production.up.railway.app/user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
