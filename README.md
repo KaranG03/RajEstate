@@ -90,4 +90,4 @@ Raj Estate is a web application built using **Spring Boot** for the backend and 
 ![Edit Plot](https://github.com/KaranG03/eCom/blob/master/edit%20plot%20details.png?raw=true)
 
 ### 📋 Customer List
-![Customers](https://private-user-images.githubusercontent.com/137709248/456142309-dd7fc032-eab5-4722-a2fb-a94999993616.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjExMTQ1NjAsIm5iZiI6MTc2MTExNDI2MCwicGF0aCI6Ii8xMzc3MDkyNDgvNDU2MTQyMzA5LWRkN2ZjMDMyLWVhYjUtNDcyMi1hMmZiLWE5NDk5OTk5MzYxNi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDIyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAyMlQwNjI0MjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lMjFjOWM1ODliZTJlMjc1MmU4MGVjZGZkZTQxMDA1YWZhZDE4ZjZjYzNjOThkODNlMDUxZDc5YWU1Y2JjMzA5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.hFk-OE1l-SJAuHY57NKfvgkMTC1LxQAGkB_NbE-Rb-U)
+![Customers](https://github.com/KaranG03/eCom/blob/master/customer.png?raw=true)
