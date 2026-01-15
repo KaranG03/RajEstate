@@ -4,110 +4,345 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RajEstate App</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1; /* Indigo */
+            --secondary: #8b5cf6; /* Violet */
+            --accent: #ec4899;    /* Pink */
+            --dark-bg: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #007bff, #00c6ff);
+            background-color: var(--dark-bg);
+            /* Deep, rich background mesh */
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+                radial-gradient(at 50% 100%, hsla(225,39%,30%,1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* Main Container */
+        .wrapper {
+            display: flex;
+            width: 85%;
+            max-width: 1200px;
+            height: 80vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Left Side: Visual Experience --- */
+        .left-panel {
+            flex: 1.2;
+            /* Subtle diagonal gradient */
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: white;
-            text-align: center;
-        }
-        h1 {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        .button-container {
-            display: flex;
-            gap: 15px;
-        }
-        button {
-            padding: 12px 25px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            outline: none;
-            position: relative;
+            padding: 60px;
             overflow: hidden;
         }
+
+        /* Glowing Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            z-index: 0;
+        }
+        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -100px; left: -50px; animation: breathe 6s infinite alternate; }
+        .orb-2 { width: 250px; height: 250px; background: var(--accent); bottom: -50px; right: -50px; animation: breathe 8s infinite alternate-reverse; }
+
+        /* Floating Feature Cards (The "Filler") */
+        .float-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 18px 25px;
+            border-radius: 20px;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .card-top {
+            align-self: flex-end;
+            margin-bottom: 30px;
+            transform: rotate(3deg);
+            animation-delay: 0s;
+        }
+
+        .card-bottom {
+            align-self: flex-start;
+            margin-top: 20px;
+            transform: rotate(-3deg);
+            animation-delay: 3s;
+        }
+
+        .icon-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .icon-home { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .icon-shield { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+
+        .card-text h4 { font-size: 14px; font-weight: 700; color: white; }
+        .card-text span { font-size: 12px; color: #cbd5e1; }
+
+        /* Hero Typography */
+        .hero-content {
+            z-index: 2;
+            margin: 20px 0;
+        }
+
+        .hero-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(to right, #fff, #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: #d1d5db;
+            max-width: 90%;
+            line-height: 1.6;
+        }
+
+        /* --- Right Side: Interaction Form --- */
+        .right-panel {
+            flex: 0.8;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-left: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .signup {
-            background: #28a745;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
+
         .login {
-            background: #ffc107;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.15);
             color: white;
         }
+
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
         }
-        button::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: -100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease-in-out;
+
+        .login:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: #fff;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
         }
-        button:hover::after {
-            left: 100%;
-        }
+
         .footer {
             position: absolute;
             bottom: 20px;
-            font-size: 14px;
-            opacity: 0.8;
+            left: 60px;
+            font-size: 12px;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.3; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* SVG styling */
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; height: auto; min-height: 90vh; width: 95%; margin: 20px 0; }
+            .left-panel { padding: 40px; min-height: 300px; }
+            .right-panel { padding: 40px; }
+            .hero-text { font-size: 2.2rem; }
+            .float-card { display: none; } /* Hide floaters on small screens to save space */
         }
     </style>
 </head>
 <body>
 
-<h1>RajEstate App</h1>
-<p>Your trusted real estate partner.</p>
-<div class="button-container">
-    <button class="signup" onclick="redirectToSignup()">Sign Up</button>
-    <button class="login" onclick="redirectToLogin()">Login</button>
+<div class="wrapper">
+    <div class="left-panel">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+
+        <div class="float-card card-top">
+            <div class="icon-box icon-home">
+                <svg class="svg-icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+            <div class="card-text">
+                <h4>Smart Housing</h4>
+                <span>Curated Listings</span>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                Find Your <br>Sanctuary.
+            </div>
+            <div class="hero-sub">
+                RajEstate provides a secure, streamlined platform to discover properties that match your lifestyle perfectly.
+            </div>
+        </div>
+
+        <div class="float-card card-bottom">
+            <div class="icon-box icon-shield">
+                <svg class="svg-icon" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <div class="card-text">
+                <h4>Secure Platform</h4>
+                <span>Encrypted Data</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+
+        <div class="form-header">
+            <h1>Get Started</h1>
+            <p>Login or create an account to access the dashboard.</p>
+        </div>
+
+        <div class="btn-group">
+            <button class="signup" onclick="redirectToSignup()">Create Account</button>
+            <button class="login" onclick="redirectToLogin()">Sign In</button>
+        </div>
+
+        <div class="footer">© 2025 RajEstate. All rights reserved.</div>
+    </div>
 </div>
 
-<div class="footer">© 2025 RajEstate. All rights reserved.</div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Remove all previous history states
-        history.replaceState(null, "", location.href);
-        history.pushState(null, "", location.href);
-        window.onpopstate = function () {
+        document.addEventListener("DOMContentLoaded", function () {
+            // Remove all previous history states
+            history.replaceState(null, "", location.href);
             history.pushState(null, "", location.href);
-        };
+            window.onpopstate = function () {
+                history.pushState(null, "", location.href);
+            };
 
-        // Allow navigation only through script
-        sessionStorage.setItem("allowedNavigation", "true");
-    });
+            // Allow navigation only through script
+            sessionStorage.setItem("allowedNavigation", "true");
+        });
 
-    function redirectToSignup() {
-        sessionStorage.setItem("allowedNavigation", "true");
-        window.location.href = "/signup";
-    }
+        function redirectToSignup() {
+            sessionStorage.setItem("allowedNavigation", "true");
+            window.location.href = "/signup";
+        }
 
-    function redirectToLogin() {
-        sessionStorage.setItem("allowedNavigation", "true");
-        window.location.href = "/login";
-    }
-</script>
-
+        function redirectToLogin() {
+            sessionStorage.setItem("allowedNavigation", "true");
+            window.location.href = "/login";
+        }
+    </script>
 
 </body>
 </html>
