@@ -3,403 +3,480 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colony List</title>
+    <title>Dashboard - RajEstate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #ece9e6, #ffffff);
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --dark-bg: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        /* Ambient Background Blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: var(--primary); }
+        .blob-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: var(--secondary); }
+
+        /* --- Header --- */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background-color: #2c3e50;
-            color: white;
+            padding: 20px 40px;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         h2 {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 26px;
-            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
         }
-
-        #colony-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-.colony-box {
-    border: none;
-    padding: 15px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 150px; /* Reduced height */
-    max-width: 260px; /* Reduced width */
-    position: relative;
-    overflow: hidden;
-    padding-top: 50px;
-}
-
-/* Adjusted Colony Name */
-.colony-name {
-    font-size: 20px;
-    font-weight: bold;
-    color: #2c3e50;
-    text-align: center;
-    width: 100%;
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding-bottom: 6px; /* Adds space below colony name */
-}
-
-/* Ensure spacing below colony name */
-.colony-box .colony-name + p {
-    margin-top: 25px; /* Slightly increased */
-}
-
-
-/* Colony Details */
-.colony-box p {
-    font-size: 14px;
-    color: #444;
-    margin: 5px 0; /* Reduced margin */
-    display: flex;
-    align-items: center;
-    padding-left: 5px; /* Ensures alignment */
-}
-
-/* Adjust Labels */
-.colony-box p strong {
-    font-size: 15px;
-    color: #222;
-    margin-right: 6px;
-}
-
-
-
-
-
-.colony-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Colony Name Styling */
-.colony-box h3 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-
-
-
-/* View Plots Button */
-.colony-box button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    background: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    align-self: flex-end;
-}
-
-.colony-box button:hover {
-    background: #0056b3;
-    transform: scale(1.05);
-}
-
-
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px;
-        }
-
-        .btn {
-            padding: 12px 18px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        #add-colony-btn {
-    background-color: #28a745;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 14px 24px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-#add-colony-btn:hover {
-    background-color: #218838;
-    transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
 
         .fixed-buttons {
             display: flex;
             gap: 15px;
         }
 
-        #show-customers-btn, #logout-btn {
-            background-color: #ff5733;
-            color: white;
-            font-size: 16px;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 50px;
+        .header-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
             cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
-        #show-customers-btn:hover, #logout-btn:hover {
-            background-color: #e04d2b;
-            transform: scale(1.1);
+        #show-customers-btn {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border-color: rgba(99, 102, 241, 0.4);
         }
+        #show-customers-btn:hover { background: rgba(99, 102, 241, 0.4); color: white; }
 
         #logout-btn {
-            background-color: #dc3545;
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.4);
         }
+        #logout-btn:hover { background: rgba(239, 68, 68, 0.3); color: white; }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            width: 300px;
-        }
-
-        .modal-content h3 {
-            margin-bottom: 15px;
-        }
-
-        .modal-buttons {
+        /* --- Controls Section --- */
+        .controls-container {
             display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0 30px;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .modal-btn {
-            padding: 10px 16px;
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Wider search bar */
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+        #search-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        #add-colony-btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 16px 50px;
             border: none;
-            border-radius: 5px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .confirm-btn {
-            background-color: #28a745;
+        #add-colony-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.6); }
+
+        /* --- Grid System --- */
+        #colony-grid {
+            display: grid;
+            /* Wider columns for bigger cards */
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            padding: 20px 40px;
+            max-width: 1600px;
+            margin: auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 18px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            border: 1px dashed var(--glass-border);
+        }
+
+        /* --- Colony Card (BIGGER) --- */
+        .colony-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px; /* More padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 320px; /* Taller card */
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .colony-box:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .colony-name {
+            font-size: 28px; /* Larger Title */
+            font-weight: 700;
             color: white;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            letter-spacing: 0.5px;
         }
 
-        .confirm-btn:hover {
-            background-color: #218838;
+        .colony-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* More space between details */
+            margin-bottom: 30px;
         }
 
-        .cancel-btn {
-            background-color: #dc3545;
+        .colony-details p {
+            font-size: 16px; /* Larger text */
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-badge {
+            width: 32px; height: 32px; /* Bigger Icons */
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+
+        /* Full width button since delete is gone */
+        .card-actions {
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .btn-view {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
             color: white;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn-view:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
         }
 
-        .cancel-btn:hover {
-            background-color: #c82333;
+        /* --- Modals & Loaders --- */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+            justify-content: center; align-items: center; animation: fadeIn 0.3s ease;
         }
+        .modal-content {
+            background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid var(--glass-border);
+            text-align: center; width: 90%; max-width: 400px; color: white;
+        }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .modal-btn { padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .confirm-btn { background: #ef4444; color: white; }
+        .cancel-btn { background: rgba(255,255,255,0.1); color: white; }
 
-        .loader-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-}
+        .loader-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 200px; color: var(--text-muted); }
+        .loader { border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid var(--secondary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
 
-.loader {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
+        #toast-container { position: fixed; top: 90px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 15px 25px; border-radius: 12px; color: white; font-weight: 500; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); opacity: 0; transform: translateX(100%); animation: slideIn 0.4s forwards, fadeOut 0.5s 2.5s forwards; }
+        .toast.success { background: rgba(16, 185, 129, 0.9); border-left: 5px solid #047857; }
+        .toast.error { background: rgba(239, 68, 68, 0.9); border-left: 5px solid #b91c1c; }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
 
+        @media (max-width: 600px) {
+            .header { padding: 15px 20px; }
+            h2 { font-size: 20px; }
+            #colony-grid { padding: 10px 20px; grid-template-columns: 1fr; } /* Stack cards on mobile */
+            .controls-container { padding: 0 20px; }
+        }
     </style>
 </head>
 <body>
 
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div id="toast-container"></div>
+
 <div class="header">
-    <h2>Colony List</h2>
+    <h2>Dashboard</h2>
     <div class="fixed-buttons">
-        <button id="show-customers-btn" onclick="redirectToCustomers()">Show Customers</button>
-        <button id="logout-btn" onclick="openLogoutModal()">Logout</button>
+        <button id="show-customers-btn" class="header-btn" onclick="redirectToCustomers()">👥 Customers</button>
+        <button id="logout-btn" class="header-btn" onclick="openLogoutModal()">🚪 Logout</button>
     </div>
 </div>
 
-<div class="btn-container">
-    <button id="add-colony-btn" onclick="redirectToAddColony()">Add New Colony</button>
+<div class="controls-container">
+    <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search colonies by name, location, or partner...">
+    </div>
+
+    <button id="add-colony-btn" onclick="redirectToAddColony()">+ Add New Colony</button>
 </div>
 
 <div id="loader" class="loader-container">
     <div class="loader"></div>
-    <p>Loading colonies...</p>
+    <p>Loading your portfolio...</p>
 </div>
-
 
 <div id="colony-grid"></div>
 
-<!-- Logout Confirmation Modal -->
 <div id="logout-modal" class="modal">
     <div class="modal-content">
-        <h3>Are you sure you want to logout?</h3>
+        <h3>Sign Out?</h3>
+        <p>You will be returned to the login screen.</p>
         <div class="modal-buttons">
-            <button class="modal-btn confirm-btn" onclick="logout()">Yes, Logout</button>
-            <button class="modal-btn cancel-btn" onclick="closeLogoutModal()">Cancel</button>
+            <button class="modal-btn cancel-btn" onclick="closeLogoutModal()">Stay</button>
+            <button class="modal-btn confirm-btn" onclick="logout()">Logout</button>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchColonyList();
-        preventBackNavigation();
-    });
+        // Global variable to store fetched data for searching
+        let allColonies = [];
 
-    async function fetchColonyList() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/login';
-            return;
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchColonyList();
+            preventBackNavigation();
+
+            // Add Search Event Listener
+            document.getElementById('search-input').addEventListener('input', handleSearch);
+        });
+
+        async function fetchColonyList() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('colony-grid').style.display = 'none';
+
+            try {
+                const response = await fetch('https://rajestate.onrender.com/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    allColonies = await response.json(); // Store in global variable
+                    displayColonyList(allColonies);
+                }
+            } catch (error) {
+                console.error('Error fetching colonies:', error);
+                showToast('Failed to load data', 'error');
+            }
+            finally {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('colony-grid').style.display = 'grid';
+            }
         }
-        document.getElementById('loader').style.display = 'flex';
-    document.getElementById('colony-grid').style.display = 'none';
-        try {
-            const response = await fetch('https://rajestate.onrender.com/user', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
+
+        // Search Logic
+        function handleSearch(e) {
+            const term = e.target.value.toLowerCase();
+
+            const filtered = allColonies.filter(colony => {
+                const nameMatch = colony.name.toLowerCase().includes(term);
+                const locationMatch = colony.location.toLowerCase().includes(term);
+                const partnerMatch = colony.partners && colony.partners.some(p => p.toLowerCase().includes(term));
+
+                return nameMatch || locationMatch || partnerMatch;
             });
 
-            if (response.ok) {
-                const colonies = await response.json();
-                displayColonyList(colonies);
-            }
-        } catch (error) {
-            console.error('Error fetching colonies:', error);
+            displayColonyList(filtered);
         }
-        finally {
-        // Hide loader and show colony grid
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('colony-grid').style.display = 'grid';
-    }
-    }
 
-   function displayColonyList(colonies) {
-    const colonyGrid = document.getElementById('colony-grid');
-    colonyGrid.innerHTML = '';
+        function displayColonyList(colonies) {
+            const colonyGrid = document.getElementById('colony-grid');
+            colonyGrid.innerHTML = '';
 
-    colonies.forEach(colony => {
-        const colonyBox = document.createElement('div');
-        colonyBox.classList.add('colony-box');
-        colonyBox.innerHTML = `
-            <h3 class="colony-name">${colony.name}</h3>
-            <p><strong>📍 Location:</strong> ${colony.location}</p>
-            <p><strong>🤝 Partners:</strong> ${colony.partners ? colony.partners.join(', ') : 'N/A'}</p>
-            <button onclick="redirectToPlotPage('${colony.id}')">🔍 View Plots</button>
-        `;
-        colonyGrid.appendChild(colonyBox);
-    });
-}
+            if (colonies.length === 0) {
+                colonyGrid.innerHTML = '<div class="no-results">No colonies found matching your search.</div>';
+                return;
+            }
 
+            colonies.forEach(colony => {
+                const colonyBox = document.createElement('div');
+                colonyBox.classList.add('colony-box');
+                colonyBox.innerHTML = `
+                    <div>
+                        <h3 class="colony-name">${colony.name}</h3>
+                        <div class="colony-details">
+                            <p><span class="icon-badge">📍</span> ${colony.location}</p>
+                            <p><span class="icon-badge">🤝</span> ${colony.partners ? colony.partners.join(', ') : 'N/A'}</p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-view" onclick="redirectToPlotPage('${colony.id}')">🔍 View Plots</button>
+                    </div>
+                `;
+                colonyGrid.appendChild(colonyBox);
+            });
+        }
 
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = type === 'success' ? `✅ ${message}` : `⚠️ ${message}`;
 
-    function redirectToPlotPage(colonyId) {
-        window.location.href = `/plot?colonyId=${colonyId}`;
-    }
+            document.getElementById('toast-container').appendChild(toast);
 
-    function redirectToAddColony() {
-        window.location.href = '/add-colony';
-    }
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
 
-    function redirectToCustomers() {
-        window.location.href = '/customers';
-    }
+        function redirectToPlotPage(colonyId) {
+            window.location.href = `/plot?colonyId=${colonyId}`;
+        }
 
-    function openLogoutModal() {
-        document.getElementById('logout-modal').style.display = 'flex';
-    }
+        function redirectToAddColony() {
+            window.location.href = '/add-colony';
+        }
 
-    function closeLogoutModal() {
-        document.getElementById('logout-modal').style.display = 'none';
-    }
+        function redirectToCustomers() {
+            window.location.href = '/customers';
+        }
 
-    function logout() {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-    }
+        function openLogoutModal() {
+            document.getElementById('logout-modal').style.display = 'flex';
+        }
 
-    function preventBackNavigation() {
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-        logout(); // Logout the user when they press back
-    };
-}
+        function closeLogoutModal() {
+            document.getElementById('logout-modal').style.display = 'none';
+        }
 
-</script>
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+
+        function preventBackNavigation() {
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                logout();
+            };
+        }
+    </script>
 
 </body>
 </html>
