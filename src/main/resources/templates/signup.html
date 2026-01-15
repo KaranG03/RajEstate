@@ -36,7 +36,8 @@
                 radial-gradient(at 50% 100%, hsla(225,39%,30%,1) 0, transparent 50%),
                 radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
             color: white;
-            overflow: hidden; /* Prevent scrolling if not needed */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Wrapper Card */
@@ -51,7 +52,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 30px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
+             overflow-y: auto;
             animation: fadeIn 0.8s ease-out;
         }
 
