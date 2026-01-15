@@ -3,131 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plots</title>
+    <title>Plots - RajEstate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-       /* Global Styles */
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #1e3c72, #2a5298);
-    color: white;
-    text-align: center;
-}
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --dark-bg: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
 
-/* Heading */
-h2 {
-    margin-top: 20px;
-    font-size: 30px;
-    letter-spacing: 1px;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-/* Plot Grid */
-#plot-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 30px;
-    max-width: 1200px;
-    margin: auto;
-}
+        body {
+            background-color: var(--dark-bg);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+                radial-gradient(at 50% 100%, hsla(225,39%,30%,1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
 
-/* Plot Box */
-.plot-box {
-    border-radius: 12px;
-    padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    color: #222;
-    min-height: 160px;
-}
+        /* Ambient Blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 400px; height: 400px; background: var(--primary); }
+        .blob-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: var(--secondary); }
 
-.plot-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-}
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-/* Status Colors */
-.sold {
-    background: linear-gradient(135deg, #43a047, #2e7d32) !important;
-    color: white;
-}
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.available {
-    background: linear-gradient(135deg, #e53935, #c62828) !important;
-    color: white;
-}
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
-/* Button */
-button {
-    padding: 12px 18px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    transition: 0.3s ease;
-}
+        /* Controls / Search */
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 20px;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
 
-button:hover {
-    background: linear-gradient(135deg, #0056b3, #003d82);
-    transform: scale(1.07);
-}
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
 
-/* Loading Spinner */
-.loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-}
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
 
-.spinner {
-    width: 55px;
-    height: 55px;
-    border: 6px solid rgba(255, 255, 255, 0.3);
-    border-top: 6px solid #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
+        #search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: all 0.3s ease;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        #search-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
 
+        /* Grid */
+        #plot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 40px;
+            max-width: 1400px;
+            margin: auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            border: 1px dashed var(--glass-border);
+        }
+
+        /* Plot Card */
+        .plot-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .plot-box:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        /* Header inside card */
+        .plot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .plot-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.sold {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .badge.available {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Info Section */
+        .plot-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .info-row strong {
+            color: white;
+            font-weight: 500;
+        }
+
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 10px 0 5px;
+            background: linear-gradient(90deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            margin-top: auto;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* Loader */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header { padding: 15px 20px; }
+            h2 { font-size: 18px; }
+            #plot-grid { padding: 10px 20px; }
+            .controls-container { padding: 0 20px; }
+        }
     </style>
 </head>
 <body>
 
-<h2>Plot List</h2>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
 
-<!-- Loading Spinner -->
+<div class="header">
+    <a href="/colonies-list" class="back-btn">← Back to Dashboard</a>
+    <h2>Plot List</h2>
+</div>
+
+<div class="controls-container">
+    <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search by Plot No, Owner, or Price...">
+    </div>
+</div>
+
 <div id="loading" class="loading-container">
     <div class="spinner"></div>
+    <p>Loading plots...</p>
 </div>
 
-<div id="plot-grid" style="display: none;">
-    <!-- Plots will be dynamically loaded here -->
-</div>
+<div id="plot-grid"></div>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const colonyId = urlParams.get('colonyId');
+    let allPlots = []; // Global variable to store data for search
 
     document.addEventListener('DOMContentLoaded', () => {
         fetchPlotList(colonyId);
+
+        // Add event listener for search
+        const searchInput = document.getElementById('search-input');
+        if(searchInput) {
+            searchInput.addEventListener('input', handleSearch);
+        }
     });
 
     async function fetchPlotList(colonyId) {
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch(`https://rajestate.onrender.com/colony/${colonyId}`, {
+            const response = await fetch(`http://localhost:8080/colony/${colonyId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -136,33 +341,74 @@ button:hover {
             });
 
             if (response.ok) {
-                const plots = await response.json();
-                displayPlotList(plots);
+                allPlots = await response.json(); // Store in global variable
+                displayPlotList(allPlots);
             } else {
-                console.error('Failed fetching plots:', error);
+                console.error('Failed fetching plots');
             }
         } catch (error) {
             console.error('Error fetching plots:', error);
         } finally {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('plot-grid').style.display = 'grid';
+            const loader = document.getElementById('loading');
+            if(loader) loader.style.display = 'none';
         }
+    }
+
+    function handleSearch(e) {
+        const term = e.target.value.toLowerCase().trim();
+
+        const filtered = allPlots.filter(plot => {
+            // SAFE CHECKS: Convert everything to String first to prevent crashes
+            const plotNo = String(plot.plotNo || "").toLowerCase();
+            const owner = String(plot.owner || "").toLowerCase();
+            const price = String(plot.price || "");
+            const status = plot.sold ? "sold" : "available";
+
+            return plotNo.includes(term) ||
+                   owner.includes(term) ||
+                   price.includes(term) ||
+                   status.includes(term);
+        });
+
+        displayPlotList(filtered);
     }
 
     function displayPlotList(plots) {
         const plotGrid = document.getElementById('plot-grid');
         plotGrid.innerHTML = '';
 
+        if (!plots || plots.length === 0) {
+            plotGrid.innerHTML = '<div class="no-results">No plots found matching your search.</div>';
+            return;
+        }
+
         plots.forEach(plot => {
             const plotBox = document.createElement('div');
-            plotBox.classList.add('plot-box', plot.sold ? 'sold' : 'available');
+            plotBox.classList.add('plot-box');
+
+            const statusClass = plot.sold ? 'sold' : 'available';
+            const statusText = plot.sold ? 'Sold' : 'Available';
+
+            // Handle empty owner if null
+            const ownerName = plot.owner ? plot.owner : "—";
+            const ownerDisplay = plot.sold ? ownerName : '<span style="color:var(--success)">Ready to Sell</span>';
 
             plotBox.innerHTML = `
-                <p><strong>Plot No:</strong> ${plot.plotNo}</p>
-                <p><strong>Price:</strong> ₹${plot.price.toLocaleString()}</p>
-                <p><strong>Owner:</strong> ${plot.owner}</p>
-                <p><strong>Status:</strong> ${plot.sold ? 'Sold' : 'Available'}</p>
-                <button onclick="redirectToEdit('${plot.id}')">Edit Plot</button>
+                <div class="plot-header">
+                    <div class="plot-number">Plot ${plot.plotNo}</div>
+                    <div class="badge ${statusClass}">${statusText}</div>
+                </div>
+
+                <div class="price-tag">₹${Number(plot.price).toLocaleString()}</div>
+
+                <div class="plot-info">
+                    <div class="info-row">
+                        <span>👤</span>
+                        <span>Owner: <strong>${ownerDisplay}</strong></span>
+                    </div>
+                    </div>
+
+                <button class="edit-btn" onclick="redirectToEdit('${plot.id}')">Edit Details</button>
             `;
             plotGrid.appendChild(plotBox);
         });
