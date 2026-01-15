@@ -329,7 +329,7 @@
             document.getElementById('loadingSpinner').style.display = 'flex';
 
             try {
-                const response = await fetch(`http://localhost:8080/plot/${plotId}`, {
+                const response = await fetch(`https://rajestate.onrender.com/plot/${plotId}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
