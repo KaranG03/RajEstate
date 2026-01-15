@@ -29,7 +29,7 @@ public class SpringSecurity {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/","/login","/sign-up","/public/**","/colonies-list","/customers","/verification","/user/reset-password","/plot","/plot-edit","/add-colony","/forgot-password","/otp**","/reset-password","/signup").permitAll() // Allow public endpoints
+                        .requestMatchers("/","/login","/sign-up","/public/**","/colonies-list","/customers","/verification","/user/reset-password","/plot","/plot-edit","/add-colony","/forgot-password","/otp**","/reset-password","/signup","/favicon.ico").permitAll() // Allow public endpoints
                         .anyRequest().authenticated() // Require authentication for other endpoints
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
